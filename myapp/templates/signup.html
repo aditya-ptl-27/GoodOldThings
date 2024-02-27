@@ -1,0 +1,92 @@
+{% extends 'header.html' %}
+{% load static %}
+{% block content %}
+<!doctype html>
+<html lang="en">
+
+<head>
+   
+  </head>
+
+  <body>
+
+    <div class="site-wrap" id="home-section">
+
+      <div class="site-mobile-menu site-navbar-target">
+        <div class="site-mobile-menu-header">
+          <div class="site-mobile-menu-close mt-3">
+            <span class="icon-close2 js-menu-toggle"></span>
+          </div>
+        </div>
+        <div class="site-mobile-menu-body"></div>
+      </div>
+      <div class="row align-items-center g-lg-5 mt-5 mx-5 p-5 "   bis_skin_checked="1">
+        <div class="col-lg-7 login-bg text-center text-lg-start shadow py-auto d-flex"  bis_skin_checked="1">
+          <h1 class="display-4 fw-bold lh-1 mb-3 text-white mx-5 align-self-center fw-800">SIGNUP By Entering Your Credintials</h1>
+          <p class="fs-6">New to our website? Sign Up Here</p>
+          
+        </div>
+        <div class="col-md-10 mx-auto col-lg-5" bis_skin_checked="1">
+          {% if msg %}
+            <b style="color:blue;">{{msg}}</b>
+          {% endif %}
+          <form action="{% url 'signup' %}" class="p-4 p-md-5 border shadow login-form bg-light"method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <!-- <div class="form-floating mb-3" bis_skin_checked="1">
+              <select class="form-control shadow" id="usertype" name="usertype" required>
+                <option value="">Please Select User Type</option>
+                <option value="renter">Borrower/Renter</option>
+                <option value="lender">Lender/Owner</option>
+              </select>
+              <label for="fname">UserType</label>
+            </div> -->
+            <div class="form-floating mb-3" bis_skin_checked="1">
+              <input type="text" class="form-control shadow" id="fname" name="fname" placeholder="Sam" required>
+              <label for="fname">First Name</label>
+            </div>
+            <div class="form-floating mb-3" bis_skin_checked="1">
+              <input type="text" class="form-control shadow" id="lname" name="lname" placeholder="Verma" required>
+              <label for="lname">Last Name</label>
+            </div>
+            <div class="form-floating mb-3" bis_skin_checked="1">
+              <input type="email" class="form-control shadow" name="email" id="email" placeholder="name@example.com" required>
+              <label for="email">Email address</label>
+            </div>
+            <div class="form-floating mb-3" bis_skin_checked="1">
+              <input type="password" class="form-control shadow" id="password" name="password" placeholder="Password" required>
+              <label for="password">Password</label>
+            </div>
+            <div class="form-floating mb-3" bis_skin_checked="1">
+              <input type="password" class="form-control shadow" id="cpassword" name="cpassword" placeholder="Confirm Password" required>
+              <label for="cpassword">Confirm Password</label>
+            </div>
+            <div class="form-floating mb-3" bis_skin_checked="1">
+              <input type="number" class="form-control shadow" id="mobile" name="mobile" placeholder="Mobile Number" required>
+              <label for="mobile">Mobile Number</label>
+            </div>
+            <div class="form-floating mb-3" bis_skin_checked="1">
+              <input type="file" class="form-control shadow" id="profile_pic" name="profile_pic" required>
+              <label for="profile_pic">Profile Pic</label>
+            </div>
+            <div class="form-floating mb-3" bis_skin_checked="1">
+              <textarea class="form-control" id="address" name="address" required></textarea>
+              <label for="address" required>Address</label>
+            </div>
+            <div class="checkbox mb-3" bis_skin_checked="1">
+              <label>
+                <input type="checkbox" value="remember-me" required> Remember me
+              </label>
+            </div>
+            <div class="text-center">
+              <button class="ps-5 pe-5 btn btn-lg btn-primary login-btn shadow" type="submit">SIGNUP</button>
+            </div>
+            <hr class="my-4">
+            <small class="text-muted">By clicking SIGNUP, you agree to the terms of use.</small>
+          </form>
+        </div>
+      </div>
+
+  </body>
+
+</html>
+{% endblock %}

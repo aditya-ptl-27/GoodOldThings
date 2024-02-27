@@ -1,0 +1,31 @@
+.login-bg{
+    background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),url('../images/login-bg.jpg');
+    background-size: cover; height: 500px;
+    border-radius: 10px;
+}
+
+.login-form{
+    border-radius: 10px;
+}
+
+.login-btn{
+
+}
+.login-btn{
+	font-family: cursive;
+	font-size: 20px;
+	background-color: rgb(13, 110, 253);
+	color: white;
+	border-color: rgb(13, 110, 253);
+	padding: 14px 20px;
+	margin: 1px 0;
+	width: 29%;
+	border-radius: 5px;
+	text-transform: uppercase;
+}
+.login-btn:hover {
+
+  background-color:white ;
+	color: rgb(13, 110, 253);
+	-webkit-transition: all 0.4s;
+}
