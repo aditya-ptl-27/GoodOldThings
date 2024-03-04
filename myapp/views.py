@@ -114,6 +114,32 @@ def logout(request):
 	except:
 		return redirect('login')
 
+def profile(request):
+	try:
+		user=User.objects.get(email=request.session['email'])
+		if user.usertype=='user':
+			if request.method=='POST':
+				user.fname=request.POST['fname']
+				user.lname=request.POST['lname']
+				user.mobile=request.POST['mobile']
+				user.address=request.POST['address']
+			
+				try:
+					user.profile_pic=request.FILES['profile_pic']
+				except:
+					pass
+				user.save()
+				msg='Profile Updated Successfully'
+				request.session['profile_pic']=user.profile_pic.url
+				request.session['fname']=user.fname
+				return render(request,'profile.html',{'msg':msg,'user':user})
+			else:
+				return render(request,'profile.html',{'user':user})
+		else:
+			return redirect('index')
+	except:
+		return redirect('login')
+
 # def lender_index(request):
 # 	# lender=User.objects.get(email=request.session['email'])
 # 	user=User.objects.get(email=request.session['email'])
