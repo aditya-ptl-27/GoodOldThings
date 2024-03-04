@@ -7,4 +7,5 @@ urlpatterns = [
     path('logout',views.logout,name='logout'),
     path('logout',views.logout,name='logout'),
     # path('lender_index',views.lender_index,name='lender_index'),
+    path('profile',views.profile,name='profile'),
 ]
