@@ -30,9 +30,6 @@
           {% if msg %}
             <b style="color:blue;">{{msg}}</b>
           {% endif %}
-          {% if form.errors %}
-            <b style="color:blue;">{{form.errors}}</b>
-          {% endif %}
           <form action="{% url 'login' %}" class="p-4 p-md-5 border shadow login-form bg-light" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="form-floating mb-3" bis_skin_checked="1">

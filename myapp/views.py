@@ -6,7 +6,6 @@ import random
 # from .form import *
 from django.shortcuts import get_object_or_404
 
-
 # Create your views here.
 def index(request):
 	try:
@@ -117,26 +116,60 @@ def logout(request):
 def profile(request):
 	try:
 		user=User.objects.get(email=request.session['email'])
+		print('in try')
+		# if user.usertype=='user':
+		if request.method=='POST':
+			user.fname=request.POST['fname']
+			user.lname=request.POST['lname']
+			user.mobile=request.POST['mobile']
+			user.address=request.POST['address']
+			
+			try:
+				user.profile_pic=request.FILES['profile_pic']
+			except:
+				pass
+			user.save()
+			msg='Profile Updated Successfully'
+			request.session['profile_pic']=user.profile_pic.url
+			request.session['fname']=user.fname
+			return render(request,'profile.html',{'msg':msg,'user':user})
+		else:
+			return render(request,'profile.html',{'user':user})
+		# else:
+		# 	return redirect('index')
+	except:
+		return redirect('login')
+
+def change_password(request):
+	try:
+		user=User.objects.get(email=request.session['email'])
 		if user.usertype=='user':
 			if request.method=='POST':
-				user.fname=request.POST['fname']
-				user.lname=request.POST['lname']
-				user.mobile=request.POST['mobile']
-				user.address=request.POST['address']
-			
-				try:
-					user.profile_pic=request.FILES['profile_pic']
-				except:
-					pass
-				user.save()
-				msg='Profile Updated Successfully'
-				request.session['profile_pic']=user.profile_pic.url
-				request.session['fname']=user.fname
-				return render(request,'profile.html',{'msg':msg,'user':user})
+				if user.password==request.POST['old_password']:
+					if request.POST['new_password']==user.password:
+						msg='You Cannot Use Your Old Password'
+						return render(request,'change_password.html',{'msg':msg,'user':user})
+					else:
+
+						if request.POST['new_password']==request.POST['cnew_password']:
+							user.password=request.POST['new_password']
+							user.save()
+							del request.session['email']
+							del request.session['fname']
+							del request.session['profile_pic']
+							msg='Password Changed Successfully'
+							return render(request,'login.html',{'msg':msg})
+						else:
+							msg='New Password And Confirm New Password Does Not Match'
+							return render(request,'change_password.html',{'msg':msg,'user':user})
+				else:
+					msg='Old Password Is Incorrect'
+					return render(request,'change_password.html',{'msg':msg,'user':user})
+
 			else:
-				return render(request,'profile.html',{'user':user})
+				return render(request,'change_password.html',{'user':user})
 		else:
-			return redirect('index')
+			return redirect('change_password')
 	except:
 		return redirect('login')
 
