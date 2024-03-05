@@ -6,7 +6,7 @@ import random
 # from .form import *
 from django.shortcuts import get_object_or_404
 
-
+# HELLO32988888888888888888888888
 # Create your views here.
 def index(request):
 	try:
