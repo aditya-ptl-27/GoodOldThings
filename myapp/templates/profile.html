@@ -60,11 +60,15 @@
               <label for="profile_pic">Profile Pic</label>
             </div>
             <div class="form-floating mb-3" bis_skin_checked="1">
-              <textarea class="form-control" id="address" name="address" required>{{user.address}}</textarea>
+              <textarea class="form-control shadow" id="address" name="address" required>{{user.address}}</textarea>
               <label for="address">Address</label>
             </div>
             <div class="text-center">
               <button class="ps-5 pe-5 btn btn-lg btn-primary login-btn shadow" type="submit">Save Changes</button>
+            </div>
+            <hr class="my-4">
+            <div>
+              <a href="{% url 'change_password' %}"><h6 class="text-center">Click Here to Change Password</h6></a>
             </div>
           </form>
         </div>
