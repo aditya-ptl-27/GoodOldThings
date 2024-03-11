@@ -3,7 +3,7 @@ from .models import User
 from django.conf import settings
 from django.core.mail import send_mail
 import random
-# from .form import *
+from .form import *
 from django.shortcuts import get_object_or_404
 
 # Create your views here.
@@ -240,6 +240,30 @@ def update_password(request):
 		else:
 			msg='New Password & Confirm New Password Does Not Match'
 			return render(request,'new_password.html',{'email':email,'msg':msg})
+
+def add_product(request):
+	user = User.objects.get(email=request.session['email'])
+	if user.usertype == 'user':
+		if request.method == 'POST':
+			product_form = ProductForm(request.POST)
+			image_formset = ProductImageForm(request.POST, request.FILES, prefix='images')
+			if product_form.is_valid() and image_formset.is_valid():
+				product = product_form.save(commit=False)
+				product.user = request.user
+				product.save()
+
+				for form in image_formset:
+					if form.cleaned_data.get('image'):
+						ProductImage.objects.create(product=product, image=form.cleaned_data['image'])
+
+				return redirect('product_list')  # Redirect to a page displaying all products
+
+		else:
+			product_form = ProductForm()
+			image_formset = ProductImageForm(prefix='images')
+			return render(request, 'add_product.html', {'product_form': product_form, 'image_formset': image_formset})
+	else:
+		return redirect('index')
 
 # def lender_index(request):
 # 	# lender=User.objects.get(email=request.session['email'])
