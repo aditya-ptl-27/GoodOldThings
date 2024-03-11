@@ -1,0 +1,86 @@
+{% extends 'header.html' %}
+{% load static %}
+{% block content %}
+<!doctype html>
+<html lang="en">
+
+<head>
+    
+  </head>
+
+  <body>
+      <div class="row mb-3">
+        <h1 class="col pt-5 text-center">Add Product </h1>
+      </div>
+        <div class="col-md-10 mx-auto col-lg-5" bis_skin_checked="1">
+          {% for field in form %}
+            {% for error in field.errors %}
+              <span class="text-danger">{{ error }}</span><br>
+            {% endfor %}
+          {% endfor %}
+          {% if msg %}
+            <b style="color:blue;">{{msg}}</b>
+          {% endif %}
+          <form action="{% url 'add_product' %}" class="p-4 p-md-5 border shadow login-form bg-light" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-floating mb-3" bis_skin_checked="1">
+              {{ product_form.p_category.label_tag }}
+              {{ product_form.p_category }}
+              <!-- <input type="text" class="form-control shadow" id="fname" name="fname" placeholder="Sam" value="{{user.fname}}" required> -->
+              <!-- <select class="form-control form-floating shadow" bis_skin_checked="1" name="p_category" id="p_category">
+                <option value="">Select Product Category</option>
+                <option value="Phone">Phone</option>
+                <option value="Laptop">Laptop</option>
+                <option value="Camera">Camera</option>
+                <option value="Travel_Bag">Travel Bag</option>
+              </select>
+              <label for="p_category">Category</label> -->
+            </div>
+            <div class="form-floating mb-3" bis_skin_checked="1">
+              <!-- <input type="text" class="form-control shadow" id="p_name" name="p_name" placeholder="Product Name"  required>
+              <label for="lname">Product Name</label> -->
+              {{ product_form.p_name.label_tag }}
+              {{ product_form.p_name }}
+            </div>
+            <div class="form-floating mb-3" bis_skin_checked="1">
+              <!-- <input type="email" class="form-control shadow" name="email" id="email" placeholder="name@example.com" value="{{user.email}}" disabled> -->
+              <!-- <textarea class="form-control shadow" id="p_description" name="p_description" placeholder="Description"></textarea>
+              <label for="p_description">Description</label> -->
+              {{ product_form.p_description.label_tag }}
+              {{ product_form.p_description
+            </div>
+            
+            <div class="form-floating mb-3" bis_skin_checked="1">
+              <!-- <input type="number" class="form-control shadow" id="p_price" name="p_price" placeholder="Product Renting Price" required>
+              <label for="p_price">Product Renting Price</label> -->
+              {{ product_form.p_price.label_tag }}
+              {{ product_form.p_price }}
+            </div>
+            {{ image_formset.management_form }}
+              {% for form in image_formset.forms %}
+            <div class="form-floating mb-3" bis_skin_checked="1">
+              <!-- <img class="rounded shadow mb-2" src="{{user.profile_pic.url}}" height="50px" width="50px"> -->
+              <!-- <input type="file" class="form-control shadow" id="p_images" name="p_images" multiple>
+              <label for="p_images">Product Images</label> -->
+            {{ form.image.label_tag }}
+            {{ form.image }}    
+            </div>
+            {% endfor %}
+
+            <!-- {% for field in form.p_images %}
+              <div class="form-group">
+                {{ field.label }}
+                {{ field.as_p }}
+              </div>
+            {% endfor %} -->
+            <div class="text-center">
+              <button class="ps-5 pe-5 btn btn-lg btn-primary login-btn shadow" type="submit">Add Product</button>
+            </div>
+          </form>
+        </div>
+      <!-- </div> -->
+
+  </body>
+
+</html>
+{% endblock %}

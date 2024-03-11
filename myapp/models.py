@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth import get_user_model
-
+ 
 # Create your models here.
 class User(models.Model):
 	fname=models.CharField(max_length=100)
@@ -15,10 +15,10 @@ class User(models.Model):
 
 	def __str__(self):
 		return self.fname+" - "+self.lname
-
 class ProductImage(models.Model):
-    image = models.ImageField(upload_to='product_images/')
-
+    # product = models.ForeignKey(Product, on_delete=models.CASCADE, default=1)
+    image = models.ImageField(upload_to='product_images/') 
+ 
 class Product(models.Model):
 	user=models.ForeignKey(User,on_delete=models.CASCADE)
 	p_category=models.CharField(max_length=100)
@@ -34,11 +34,20 @@ class Product(models.Model):
 	def __str__(self):
 		return self.user.fname+ ' - ' +self.user.lname+' - ' +self.p_name
 
+	# def product_save(self):
+	# 	super(Product, self).save()
+	# 	for image in self.p_images.all():
+	# 		image.product = self
+	# 		image.save()
+
 
 	def save(self, *args, **kwargs):
 		self.slug = generate_slug(self.p_name)
-		super(BlogModel, self).save(*args, **kwargs)
+		super(Product, self).save(*args, **kwargs)
 
+# class ProductImage(models.Model):
+#     # product = models.ForeignKey(Product, on_delete=models.CASCADE, default=1)
+#     image = models.ImageField(upload_to='product_images/')
 
 # 	def product_create(request):
 #     if request.method == 'POST':
