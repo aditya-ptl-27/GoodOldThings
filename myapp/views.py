@@ -256,12 +256,14 @@ def add_product(request):
 					if form.cleaned_data.get('image'):
 						ProductImage.objects.create(product=product, image=form.cleaned_data['image'])
 
-				return redirect('product_list')  # Redirect to a page displaying all products
+				# return redirect('product_list')  # Redirect to a page displaying all products
+				msg='Product added Successfully'
+				return render(request, 'add_product.html', {'msg': msg, 'user': user})
 
 		else:
 			product_form = ProductForm()
 			image_formset = ProductImageForm(prefix='images')
-			return render(request, 'add_product.html', {'product_form': product_form, 'image_formset': image_formset})
+			return render(request, 'add_product.html', {'product_form': product_form, 'image_formset': image_formset,'user': user})
 	else:
 		return redirect('index')
 
