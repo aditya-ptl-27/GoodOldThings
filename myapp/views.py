@@ -6,6 +6,7 @@ import random
 from .form import ProductForm,ProductImageForm
 from django.contrib import messages
 from django.shortcuts import get_object_or_404
+from datetime import datetime
  
 # Create your views here.
 def index(request):
@@ -165,58 +166,67 @@ def change_password(request):
 	except:
 		return redirect('login')
 
-def add_product(request):
-	user = User.objects.get(email=request.session['email'])
-	if user.usertype == 'user':
-		if request.method == 'POST':
-			product_form = ProductForm(request.POST)
-			image_formset = ProductImageFormSet(request.POST, request.FILES, prefix='images')
-		if product_form.is_valid() and image_formset.is_valid():
-			product = product_form.save(commit=False)
-			product.user = request.user
-			product.save()
-
-			for form in image_formset:
-				if form.cleaned_data.get('image'):
-					ProductImage.objects.create(product=product, image=form.cleaned_data['image'])
-
-			return redirect('product_list')  # Redirect to a page displaying all products
-
-		else:
-			product_form = ProductForm()
-			image_formset = ProductImageFormSet(prefix='images')
-			return render(request, 'add_product.html', {'product_form': product_form, 'image_formset': image_formset})
-	else:
-		return redirect('index')
-
-
 # def add_product(request):
-# 	user=User.objects.get(email=request.session['email'])
-# 	# trainer=User.objects.get(email=request.session['email'])
-# 	if user.usertype=='user':
-# 		if request.method=='POST':
-# 			form = ProductForm(request.POST, request.FILES)
-# 			if form.is_valid():
-# 				product = form.save()
-# 				for image in form.cleaned_data['images']:
-# 					Image.objects.create(image=image, product=product)
-# 					Product.objects.create(
-# 							user=user,
-# 							p_category=request.POST['p_category'],
-# 							p_name=request.POST['p_name'],
-# 							p_description=request.POST['p_description'],
-# 							p_price=request.POST['p_price'],
-# 							p_images=request.FILES['p_images']
-# 						)	
-# 					msg='Product Added Successfully'
-# 					return render(request,'add_product.html',{'msg':msg,'user':user,'form':form})
-# 			else:
-# 				form = ProductForm()
+# 	user = User.objects.get(email=request.session['email'])
+# 	if user.usertype == 'user':
+# 		if request.method == 'POST':
+# 			product_form = ProductForm(request.POST)
+# 			image_formset = ProductImageFormSet(request.POST, request.FILES, prefix='images')
+# 		if product_form.is_valid() and image_formset.is_valid():
+# 			product = product_form.save(commit=False)
+# 			product.user = request.user
+# 			product.save()
+
+# 			for form in image_formset:
+# 				if form.cleaned_data.get('image'):
+# 					ProductImage.objects.create(product=product, image=form.cleaned_data['image'])
+
+# 			return redirect('product_list')  # Redirect to a page displaying all products
 
 # 		else:
-# 			return render(request,'add_product.html',{'user':user})
+# 			product_form = ProductForm()
+# 			image_formset = ProductImageFormSet(prefix='images')
+# 			return render(request, 'add_product.html', {'product_form': product_form, 'image_formset': image_formset})
 # 	else:
 # 		return redirect('index')
+
+
+def add_product(request):
+	user=User.objects.get(email=request.session['email'])
+	# trainer=User.objects.get(email=request.session['email'])
+	if user.usertype=='user':
+		if request.method=='POST':
+			images = request.FILES.getlist('p_images')
+			p_available_from = request.POST.get('p_available_from')
+			if p_available_from:
+				parts = p_available_from.split('/')
+				if len(parts) == 3:
+					available_from = '-'.join([parts[2], parts[0], parts[1]])
+					print(available_from)
+
+			p_available_until = request.POST.get('p_available_until')
+			if p_available_until:
+				parts = p_available_until.split('/')
+				if len(parts) == 3:
+					available_until = '-'.join([parts[2], parts[0], parts[1]])
+			product=Product.objects.create(
+					user=user,
+					p_category=request.POST['p_category'],
+					p_name=request.POST['p_name'],
+					p_description=request.POST['p_description'],
+					p_price=request.POST['p_price'],
+					p_available_from=available_from,
+					p_available_until=available_until
+					# p_images=request.FILES['p_images']
+				)	
+			for image in images:
+				ProductImage.objects.create(image=image, product=product)
+			msg='Product Added Successfully'
+			return render(request,'add_product.html',{'msg':msg,'user':user})
+		else:
+			return render(request,'add_product.html',{'user':user})
+	else:
+		return redirect('index')
 
 	# def product_create(request):
     # if request.method == 'POST':
