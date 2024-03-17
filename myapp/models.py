@@ -15,9 +15,9 @@ class User(models.Model):
 
 	def __str__(self):
 		return self.fname+" - "+self.lname
-class ProductImage(models.Model):
-    # product = models.ForeignKey(Product, on_delete=models.CASCADE, default=1)
-    image = models.ImageField(upload_to='product_images/') 
+# class ProductImage(models.Model):
+#     # product = models.ForeignKey(Product, on_delete=models.CASCADE, default=1)
+#     image = models.ImageField(upload_to='product_images/') 
  
 class Product(models.Model):
 	user=models.ForeignKey(User,on_delete=models.CASCADE)
@@ -26,7 +26,7 @@ class Product(models.Model):
 	p_description=models.TextField(default='null')
 	p_price=models.FloatField()
 	# product_img = ArrayField(ArrayField(models.IntegerField()))
-	p_images = models.ManyToManyField(ProductImage)
+	# p_images = models.ManyToManyField(ProductImage)
 	slug = models.SlugField(max_length=1000, null=True, blank=True)
 	created_at = models.DateTimeField(auto_now_add=True)
 	updated_at = models.DateTimeField(auto_now=True)
@@ -45,9 +45,9 @@ class Product(models.Model):
 		self.slug = generate_slug(self.p_name)
 		super(Product, self).save(*args, **kwargs)
 
-# class ProductImage(models.Model):
-#     # product = models.ForeignKey(Product, on_delete=models.CASCADE, default=1)
-#     image = models.ImageField(upload_to='product_images/')
+class ProductImage(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, default=1)
+    image = models.ImageField(upload_to='product_images/')
 
 # 	def product_create(request):
 #     if request.method == 'POST':
