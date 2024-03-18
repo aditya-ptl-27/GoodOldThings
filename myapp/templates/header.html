@@ -48,7 +48,7 @@
         </a>
         {% if request.session.email %}
         <ul class="nav col-12 col-lg-auto ms-lg-auto font-size-20 mb-2 mx-auto mb-md-0">
-          <li><a href="#" class="px-4 text-darkdark">Home</a></li>
+          <li><a href="{% url 'index' %}" class="px-4 text-darkdark">Home</a></li>
           <li><a href="#" class="px-4 text-dark">Features</a></li>
           <li><a href="{% url 'add_product' %}" class="px-4 text-dark">Add Product</a></li>
           <li><a href="#" class="px-4 text-dark">FAQs</a></li>
@@ -56,7 +56,7 @@
         </ul>
         {% else %}
         <ul class="nav col-12 col-lg-auto ms-lg-auto font-size-20 mb-2 mx-auto mb-md-0">
-          <li><a href="#" class="px-4 text-darkdark">Home</a></li>
+          <li><a href="{% url 'index' %}" class="px-4 text-darkdark">Home</a></li>
           <li><a href="#" class="px-4 text-dark">Features</a></li>
           <li><a href="{% url 'login' %}" class="px-4 text-dark">Add Product</a></li>
           <li><a href="#" class="px-4 text-dark">FAQs</a></li>

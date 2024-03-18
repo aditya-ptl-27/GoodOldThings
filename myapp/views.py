@@ -12,20 +12,29 @@ from datetime import datetime
 def index(request):
 	try:
 		user=User.objects.get(email=request.session['email'])
-		# if user.usertype=='renter':
-			# workout=Workout.objects.all()
-			# blogs=BlogModel.objects.all()
-			# lender=User.objects.filter(usertype='lender')
-			# context={'workout':workout,'lender':lender,'blogs':blogs,'user':user}
-		return render(request,'index.html',{'user':user})
+		print(user.profile_pic)
+		if user.usertype=='user':
+			products=Product.objects.order_by("-id")[:6]
+			# images=ProductImage.objects.all()	
+			# for i in products:
+			# 	print(i.p_name)
+			# 	print(i.id)
+			# 	p_image=[]
+			# 	for im in images:
+			# 		if im.product.id==i.id:	
+			# 			p_image.append(im.image)
+			# 	print(p_image)
+			context={'products':products,'user':user}
+		return render(request,'index.html',context)
 		# else:
 		# 	return redirect('lender_index')
 	except:
+		products=Product.objects.order_by("-id")[:6]
 		# workout=Workout.objects.all()
 		# blogs=BlogModel.objects.all()
 		# lender=User.objects.filter(usertype='lender')
-		# context={'workout':workout,'lender':lender,'blogs':blogs}
-		return render(request,'index.html')
+		context={'products':products}
+		return render(request,'index.html',context)
 
 def signup(request):
 	try:
@@ -217,7 +226,6 @@ def add_product(request):
 					p_price=request.POST['p_price'],
 					p_available_from=available_from,
 					p_available_until=available_until
-					# p_images=request.FILES['p_images']
 				)	
 			for image in images:
 				ProductImage.objects.create(image=image, product=product)

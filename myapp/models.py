@@ -16,9 +16,6 @@ class User(models.Model):
 
 	def __str__(self):
 		return self.fname+" - "+self.lname
-# class ProductImage(models.Model):
-#     # product = models.ForeignKey(Product, on_delete=models.CASCADE, default=1)
-#     image = models.ImageField(upload_to='product_images/') 
  
 class Product(models.Model):
 	user=models.ForeignKey(User,on_delete=models.CASCADE)
