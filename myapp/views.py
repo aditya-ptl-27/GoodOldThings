@@ -175,6 +175,7 @@ def change_password(request):
 	except:
 		return redirect('login')
 
+
 # def add_product(request):
 # 	user = User.objects.get(email=request.session['email'])
 # 	if user.usertype == 'user':
@@ -249,6 +250,75 @@ def add_product(request):
     #     form = ProductForm()
 
     # return render(request, 'product_create.html', {'form': form})
+
+def forgot_password(request):
+	try:
+		user=User.objects.get(email=request.session['email'])
+		if user.usertype=='user':
+			return redirect('change_password')
+		else:
+			return redirect('change_password')
+	except:
+		if request.method=='POST':
+			try:
+				user=User.objects.get(email=request.POST['email'])
+				otp=random.randint(100000,999999)
+				subject = 'OTP For Forgot Password'
+				message ='Hi '+ user.fname+ ', Your OTP For Forgot Password Is '+ str(otp)
+				email_from = settings.EMAIL_HOST_USER
+				recipient_list = [user.email, ]
+				send_mail( subject, message, email_from, recipient_list )
+				msg='OTP Sent Successfully'
+				return render(request,'verify_otp.html',{'otp':otp,'email':user.email,'msg':msg})
+			except:
+				msg='Email Not Registered'
+				return render(request,'forgot_password.html',{'msg':msg}) 
+		else:
+			return render(request,'forgot_password.html')
+
+def verify_otp(request):
+	try:
+		user=User.objects.get(email=request.session['email'])
+		if user.usertype=='user':
+			return redirect('index')
+		else:
+			return redirect('login')
+	except:
+		email=request.POST['email']
+		otp=request.POST['otp']
+		uotp=request.POST['uotp']
+
+		if otp==uotp:
+			return render(request,'new_password.html',{'email':email})
+		else:
+			msg='OTP Does Not Match'
+			return render(request,'verify_otp.html',{'email':email,'otp':otp,'msg':msg})
+
+def update_password(request):
+	try:
+		user=User.objects.get(email=request.session['email'])
+		if user.usertype=='user':
+			return redirect('index')
+		else:
+			return redirect('trainer_index')
+	except:
+		email=request.POST['email']
+		np=request.POST['new_password']
+		cnp=request.POST['cnew_password']
+		if np==cnp:
+			user=User.objects.get(email=email)
+			if user.password==np:
+				msg='You Cannot Use Your Old Password'
+				return render(request,'new_password.html',{'email':email,'msg':msg})
+			else:
+				user.password=np
+				user.save()
+				msg='Password Updated Successfully'
+				return render(request,'login.html',{'msg':msg})
+		else:
+			msg='New Password & Confirm New Password Does Not Match'
+			return render(request,'new_password.html',{'email':email,'msg':msg})
+
 
 # def lender_index(request):
 # 	# lender=User.objects.get(email=request.session['email'])
