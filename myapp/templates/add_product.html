@@ -1,0 +1,94 @@
+{% extends 'header.html' %}
+{% load static %}
+{% block content %}
+<!doctype html>
+<html lang="en">
+
+<head>
+    
+  </head>
+
+  <body>
+      <div class="row mb-3">
+        <h1 class="col pt-5 text-center">Add Product </h1>
+      </div>
+        <div class="col-md-10 mx-auto col-lg-5" bis_skin_checked="1">
+          {% if msg %}
+            <b style="color:blue;">{{msg}}</b>
+          {% endif %}
+          <form action="{% url 'add_product' %}" class="p-4 p-md-5 border shadow trip-form login-form bg-light" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-floating mb-3" bis_skin_checked="1">
+              <select class="form-control form-floating shadow" bis_skin_checked="1" name="p_category" id="p_category">
+                <option value="">Select Product Category</option>
+                <option value="Phone">Phone</option>
+                <option value="Laptop">Laptop</option>
+                <option value="Camera">Camera</option>
+                <option value="Travel_Bag">Travel Bag</option>
+              </select>
+              <label for="p_category">Category</label>
+            </div>
+            <div class="form-floating mb-3" bis_skin_checked="1">
+              <input type="text" class="form-control shadow" id="p_name" name="p_name" placeholder="Product Name"  required>
+              <label for="lname">Product Name</label>
+
+            </div>
+            <div class="form-floating mb-3" bis_skin_checked="1">
+              <textarea class="form-control shadow" id="p_description" name="p_description" placeholder="Description"></textarea>
+              <label for="p_description">Description</label>
+
+            </div>
+            
+            <div class="form-floating mb-3" bis_skin_checked="1">
+              <input type="number" class="form-control shadow" id="p_price" name="p_price" placeholder="Product Renting Price" required>
+              <label for="p_price">Product Renting Price</label>
+            </div>
+            <div class="form-floating mb-3" bis_skin_checked="1">
+              <input type="file" class="form-control shadow" id="p_images" name="p_images"
+              accept="image/*" multiple required>
+              <label for="p_images">Product Images (You Can Add Multiple Images)</label>
+            </div>
+            <div class="row mb-3">
+              <div class="mb-3 mb-md-0 col-md-6">
+                      <div class="form-control-wrap">
+                        <input type="text" id="p_available_from" name="p_available_from" placeholder="Product Available From" class="form-control datepicker shadow px-3" required>
+                        <span class="icon icon-date_range"></span>
+                      </div>
+                      <label for="p_available_from">Product Renting Price</label>
+              </div>
+                  <div class="mb-3 mb-md-0 col-md-6">
+                    <div class="form-control-wrap">
+                      <input type="text" id="p_available_until" name="p_available_until" placeholder="Product Available To" class="form-control datepicker shadow px-3" required>
+                      <span class="icon icon-date_range"></span>
+                    </div>
+                    <label for="p_available_until">Product Available To</label>
+                  </div>
+            </div>
+            <div class="text-center">
+              <button class="ps-5 pe-5 btn btn-lg btn-primary login-btn shadow" type="submit">Add Product</button>
+            </div>
+          </form>
+        </div>
+      <!-- </div> -->
+
+  </body>
+
+<script type="text/javascript">
+  const input = document.querySelector('#p_images');
+
+// Listen for files selection
+input.addEventListener('change', (e) => {
+    // Retrieve all files
+    const files = input.files;
+
+    // Check files count
+    if (files.length > 4) {
+        alert(`Only 4 files are allowed to upload.`);
+        return;
+    }
+
+    // TODO: continue uploading on server
+});
+</script>
+</html>
+{% endblock %}

@@ -1,7 +1,8 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth import get_user_model
-
+from .helpers import *
+ 
 # Create your models here.
 class User(models.Model):
 	fname=models.CharField(max_length=100)
@@ -15,18 +16,15 @@ class User(models.Model):
 
 	def __str__(self):
 		return self.fname+" - "+self.lname
-
-class ProductImage(models.Model):
-    image = models.ImageField(upload_to='product_images/')
-
+ 
 class Product(models.Model):
 	user=models.ForeignKey(User,on_delete=models.CASCADE)
 	p_category=models.CharField(max_length=100)
 	p_name=models.CharField(max_length=100)
-	p_description=models.TextField(default='null')
+	p_description=models.TextField()
 	p_price=models.FloatField()
-	# product_img = ArrayField(ArrayField(models.IntegerField()))
-	p_images = models.ManyToManyField(ProductImage)
+	p_available_from=models.DateField()
+	p_available_until=models.DateField()
 	slug = models.SlugField(max_length=1000, null=True, blank=True)
 	created_at = models.DateTimeField(auto_now_add=True)
 	updated_at = models.DateTimeField(auto_now=True)
@@ -34,10 +32,16 @@ class Product(models.Model):
 	def __str__(self):
 		return self.user.fname+ ' - ' +self.user.lname+' - ' +self.p_name
 
-
 	def save(self, *args, **kwargs):
 		self.slug = generate_slug(self.p_name)
-		super(BlogModel, self).save(*args, **kwargs)
+		super(Product, self).save(*args, **kwargs)
+
+class ProductImage(models.Model):
+	product = models.ForeignKey(Product, on_delete=models.CASCADE, default=1)
+	image = models.ImageField(upload_to='product_images/')
+
+	def __str__(self):
+		return self.product.user.fname+ ' - ' +self.product.p_name+' - ' +str(self.image)
 
 
 # 	def product_create(request):

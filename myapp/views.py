@@ -1,29 +1,40 @@
 from django.shortcuts import render,redirect
-from .models import User
+from .models import User,Product,ProductImage
 from django.conf import settings
 from django.core.mail import send_mail
 import random
-# from .form import *
+from .form import ProductForm,ProductImageForm
+from django.contrib import messages
 from django.shortcuts import get_object_or_404
-
+from datetime import datetime
+ 
 # Create your views here.
 def index(request):
 	try:
 		user=User.objects.get(email=request.session['email'])
-		# if user.usertype=='renter':
-			# workout=Workout.objects.all()
-			# blogs=BlogModel.objects.all()
-			# lender=User.objects.filter(usertype='lender')
-			# context={'workout':workout,'lender':lender,'blogs':blogs,'user':user}
-		return render(request,'index.html',{'user':user})
+		print(user.profile_pic)
+		if user.usertype=='user':
+			products=Product.objects.order_by("-id")[:6]
+			# images=ProductImage.objects.all()	
+			# for i in products:
+			# 	print(i.p_name)
+			# 	print(i.id)
+			# 	p_image=[]
+			# 	for im in images:
+			# 		if im.product.id==i.id:	
+			# 			p_image.append(im.image)
+			# 	print(p_image)
+			context={'products':products,'user':user}
+		return render(request,'index.html',context)
 		# else:
 		# 	return redirect('lender_index')
 	except:
+		products=Product.objects.order_by("-id")[:6]
 		# workout=Workout.objects.all()
 		# blogs=BlogModel.objects.all()
 		# lender=User.objects.filter(usertype='lender')
-		# context={'workout':workout,'lender':lender,'blogs':blogs}
-		return render(request,'index.html')
+		context={'products':products}
+		return render(request,'index.html',context)
 
 def signup(request):
 	try:
@@ -84,15 +95,6 @@ def login(request):
 					request.session['fname']=user.fname
 					request.session['profile_pic']=user.profile_pic.url
 					return redirect('index')
-					# return render(request,'index.html',{'user':user})
-					# elif user.usertype=='lender':
-					# 	print('elseeeeeeeeeeeeeeeeeee')
-					# 	request.session['email']=user.email
-					# 	print('Email: ',user.email)
-					# 	request.session['fname']=user.fname
-					# 	request.session['profile_pic']=user.profile_pic.url
-					# 	return redirect('lender_index')
-						# returns render(request,'lender_index.html',{'user':user})
 				else:
 					msg='Password Is Incorrect'
 					return render(request,'login.html',{'msg':msg})
@@ -173,6 +175,82 @@ def change_password(request):
 	except:
 		return redirect('login')
 
+
+# def add_product(request):
+# 	user = User.objects.get(email=request.session['email'])
+# 	if user.usertype == 'user':
+# 		if request.method == 'POST':
+# 			product_form = ProductForm(request.POST)
+# 			image_formset = ProductImageFormSet(request.POST, request.FILES, prefix='images')
+# 		if product_form.is_valid() and image_formset.is_valid():
+# 			product = product_form.save(commit=False)
+# 			product.user = request.user
+# 			product.save()
+
+# 			for form in image_formset:
+# 				if form.cleaned_data.get('image'):
+# 					ProductImage.objects.create(product=product, image=form.cleaned_data['image'])
+
+# 			return redirect('product_list')  # Redirect to a page displaying all products
+
+# 		else:
+# 			product_form = ProductForm()
+# 			image_formset = ProductImageFormSet(prefix='images')
+# 			return render(request, 'add_product.html', {'product_form': product_form, 'image_formset': image_formset})
+# 	else:
+# 		return redirect('index')
+
+
+def add_product(request):
+	user=User.objects.get(email=request.session['email'])
+	# trainer=User.objects.get(email=request.session['email'])
+	if user.usertype=='user':
+		if request.method=='POST':
+			images = request.FILES.getlist('p_images')
+			p_available_from = request.POST.get('p_available_from')
+			if p_available_from:
+				parts = p_available_from.split('/')
+				if len(parts) == 3:
+					available_from = '-'.join([parts[2], parts[0], parts[1]])
+					print(available_from)
+
+			p_available_until = request.POST.get('p_available_until')
+			if p_available_until:
+				parts = p_available_until.split('/')
+				if len(parts) == 3:
+					available_until = '-'.join([parts[2], parts[0], parts[1]])
+			product=Product.objects.create(
+					user=user,
+					p_category=request.POST['p_category'],
+					p_name=request.POST['p_name'],
+					p_description=request.POST['p_description'],
+					p_price=request.POST['p_price'],
+					p_available_from=available_from,
+					p_available_until=available_until
+				)	
+			for image in images:
+				ProductImage.objects.create(image=image, product=product)
+			msg='Product Added Successfully'
+			return render(request,'add_product.html',{'msg':msg,'user':user})
+		else:
+			return render(request,'add_product.html',{'user':user})
+	else:
+		return redirect('index')
+
+	# def product_create(request):
+    # if request.method == 'POST':
+    #     form = ProductForm(request.POST, request.FILES)
+    #     if form.is_valid():
+    #         product = form.save()
+    #         for image in form.cleaned_data['images']:
+    #             Image.objects.create(image=image, product=product)
+
+    #         return redirect('product_list')
+    # else:
+    #     form = ProductForm()
+
+    # return render(request, 'product_create.html', {'form': form})
+
 def forgot_password(request):
 	try:
 		user=User.objects.get(email=request.session['email'])
@@ -240,6 +318,7 @@ def update_password(request):
 		else:
 			msg='New Password & Confirm New Password Does Not Match'
 			return render(request,'new_password.html',{'email':email,'msg':msg})
+
 
 # def lender_index(request):
 # 	# lender=User.objects.get(email=request.session['email'])
